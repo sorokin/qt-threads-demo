@@ -33,12 +33,10 @@ signals:
 private:
     void factor(uint64_t a);
     void queue_callback();
-
-private slots:
     void callback();
 
 private:
-    std::mutex m;
+    mutable std::mutex m;
     uint64_t number_to_factor;
     bool quit;
     bool callback_queued;

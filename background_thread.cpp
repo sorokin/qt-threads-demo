@@ -64,6 +64,7 @@ void background_thread::set_number_to_factor(uint64_t n)
 
 background_thread::result background_thread::get_result() const
 {
+    std::lock_guard<std::mutex> lg(m);
     return current_result;
 }
 
@@ -98,7 +99,9 @@ void background_thread::queue_callback()
     if (callback_queued)
         return;
 
-    QMetaObject::invokeMethod(this, "callback", Qt::QueuedConnection);
+    callback_queued = true;
+    QMetaObject::invokeMethod(this, &background_thread::callback,
+                              Qt::QueuedConnection);
 }
 
 void background_thread::callback()
